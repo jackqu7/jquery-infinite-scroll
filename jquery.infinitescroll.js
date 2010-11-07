@@ -11,19 +11,22 @@
                     container: $(document),
                     callback: null
                 }, options);
-            var req = null;
+            var req = null, callback_lock = false;
             var maxReached = false;
-
+            
             var infinityRunner = function() {
                 if (settings.url !== null || settings.callback !== null) {
                     if  (settings.force || (settings.triggerAt >= (settings.container.height() - el.height() - el.scrollTop()))) {
                         settings.force = false;
                         // if the request is in progress, exit and wait for it to finish
-                        if (req && req.readyState < 4 && req.readyState > 0) {
+                        if ((req && req.readyState < 4 && req.readyState > 0) || callback_lock) {
                             return;
                         }
                         if (settings.callback !== null) {
-                          settings.callback();
+                          callback_lock = true;
+                          settings.callback(function() {
+                            callback_lock = false;
+                          });
                         } else {
                           $(settings.appendTo).trigger('infinitescroll.beforesend');
                           req = $.get(settings.url, 'page='+settings.page, function(data) {
