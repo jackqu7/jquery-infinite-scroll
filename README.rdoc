@@ -48,6 +48,9 @@ This is determined by handing back an empty response from the server. Once this 
  container:
     default: document
     This is the container used to measure scrolling, and then trigger a load
+ callback:
+    default: null
+    Override the default AJAX loading behaviour with a custom function, called when the bottom of the page is reached
 
 === Events
 

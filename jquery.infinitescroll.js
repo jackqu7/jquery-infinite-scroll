@@ -8,7 +8,8 @@
                     triggerAt: 300,
                     page: 2,
                     appendTo: '.list tbody',
-                    container: $(document)
+                    container: $(document),
+                    callback: null
                 }, options);
             var req = null;
             var maxReached = false;
@@ -21,21 +22,25 @@
                         if (req && req.readyState < 4 && req.readyState > 0) {
                             return;
                         }
-                        $(settings.appendTo).trigger('infinitescroll.beforesend');
-                        req = $.get(settings.url, 'page='+settings.page, function(data) {
-                            if (data !== '') {
-                                if (settings.page > 1) {
-                                    $(settings.appendTo).append(data);
-                                } else {
-                                    $(settings.appendTo).html(data);
-                                }
-                                settings.page++;
-                                $(settings.appendTo).trigger('infinitescroll.finish');
-                            } else {
-                                maxReached = true;
-                                $(settings.appendTo).trigger('infinitescroll.maxreached');
-                            }
-                        }, 'html');
+                        if (settings.callback !== null) {
+                          settings.callback();
+                        } else {
+                          $(settings.appendTo).trigger('infinitescroll.beforesend');
+                          req = $.get(settings.url, 'page='+settings.page, function(data) {
+                              if (data !== '') {
+                                  if (settings.page > 1) {
+                                      $(settings.appendTo).append(data);
+                                  } else {
+                                      $(settings.appendTo).html(data);
+                                  }
+                                  settings.page++;
+                                  $(settings.appendTo).trigger('infinitescroll.finish');
+                              } else {
+                                  maxReached = true;
+                                  $(settings.appendTo).trigger('infinitescroll.maxreached');
+                              }
+                          }, 'html');
+                        }
                     }
                 }
             };
@@ -47,6 +52,7 @@
             });
 
             el.scroll(function(e) {
+              debugger;
                 if (!maxReached) {
                     infinityRunner();
                 }
