@@ -15,7 +15,7 @@
             var maxReached = false;
 
             var infinityRunner = function() {
-                if (settings.url !== null) {
+                if (settings.url !== null || settings.callback !== null) {
                     if  (settings.force || (settings.triggerAt >= (settings.container.height() - el.height() - el.scrollTop()))) {
                         settings.force = false;
                         // if the request is in progress, exit and wait for it to finish
@@ -52,7 +52,6 @@
             });
 
             el.scroll(function(e) {
-              debugger;
                 if (!maxReached) {
                     infinityRunner();
                 }
